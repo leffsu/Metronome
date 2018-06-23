@@ -6,9 +6,27 @@ package su.leff.metronome.Class;
 
 public class DrumSound {
 
+    int id;
+    boolean set;
     String name;
     String description;
     int sound;
+
+    public DrumSound(int id, boolean set, String name, int sound, String description) {
+        this.id = id;
+        this.set = set;
+        this.name = name;
+        this.description = description;
+        this.sound = sound;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public boolean getSet() {
+        return set;
+    }
 
     public DrumSound(String name, int sound, String description){
         this.name = name;
@@ -22,6 +40,10 @@ public class DrumSound {
 
     public String getDescription() {
         return description;
+    }
+
+    public void setSet(boolean set) {
+        this.set = set;
     }
 
     public int getSound() {

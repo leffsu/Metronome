@@ -22,8 +22,10 @@ public class DrumSoundAdapter extends RecyclerView.Adapter<DrumSoundAdapter.View
 
     Metronome metronome;
 
+    int activeId = 0;
 
-    public DrumSoundAdapter(ArrayList<DrumSound> drumSounds, Context context, Metronome metronome){
+
+    public DrumSoundAdapter(ArrayList<DrumSound> drumSounds, Context context, Metronome metronome) {
         this.drumSounds = drumSounds;
         this.context = context;
         this.metronome = metronome;
@@ -40,18 +42,25 @@ public class DrumSoundAdapter extends RecyclerView.Adapter<DrumSoundAdapter.View
         holder.title.setText(drumSounds.get(position).getName());
         holder.description.setText(drumSounds.get(position).getDescription());
         holder.hiddenSound.setText(String.valueOf(drumSounds.get(position).getSound()));
+        holder.hiddenId.setText(String.valueOf(drumSounds.get(position).getId()));
+        holder.checkSound.clearColorFilter();
+        if (drumSounds.get(position).getSet()) {
+            holder.checkSound.setColorFilter(context.getResources().getColor(R.color.colorAccent));
+        }
     }
+
     @Override
     public int getItemCount() {
         return drumSounds.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public TextView title;
         public TextView description;
         public ImageButton checkSound;
         public TextView hiddenSound;
+        public TextView hiddenId;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -59,6 +68,7 @@ public class DrumSoundAdapter extends RecyclerView.Adapter<DrumSoundAdapter.View
             description = itemView.findViewById(R.id.txv_description);
             checkSound = itemView.findViewById(R.id.imageView2);
             hiddenSound = itemView.findViewById(R.id.hidden_sound);
+            hiddenId = itemView.findViewById(R.id.txv_id);
 //            checkSound.setOnClickListener(onSoundCheckListener);
             itemView.setOnClickListener(this);
         }
@@ -68,6 +78,21 @@ public class DrumSoundAdapter extends RecyclerView.Adapter<DrumSoundAdapter.View
             System.out.println(((TextView) v.findViewById(R.id.hidden_sound)).getText().toString());
             String stringToParse = ((TextView) v.findViewById(R.id.hidden_sound)).getText().toString();
             metronome.updateSoundResource(Integer.valueOf(stringToParse));
+//            checkSound.setColorFilter(context.getResources().getColor(R.color.colorAccent));
+//            for (DrumSound ds: drumSounds
+//                 ) {
+//                ds.setSet(false);
+//            }
+            notifyItemChanged(activeId);
+            drumSounds.get(activeId).setSet(false);
+            drumSounds.get(Integer.valueOf(hiddenId.getText().toString())).setSet(true);
+            activeId = Integer.valueOf(hiddenId.getText().toString());
+            notifyItemChanged(activeId);
+            metronome.setTitle(context.getResources().getString(R.string.app_name) + ": " + drumSounds.get(activeId).getName());
+        }
+
+        public void resetColorFilter() {
+            checkSound.clearColorFilter();
         }
     }
 }

@@ -59,7 +59,7 @@ public class Metronome extends AppCompatActivity {
     RelativeLayout rippleLayoutPlus;
     RippleBackground rippleBackgroundFab;
     FloatingActionButton fabPlayPause;
-
+    ArrayList<DrumSound> drumSounds = new ArrayList<>();
     RelativeLayout controls;
 
     MaterialEditText bpm_edt;
@@ -75,19 +75,19 @@ public class Metronome extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.RecyclerView);
 
-        ArrayList<DrumSound> drumSounds = new ArrayList<>();
 
-        drumSounds.add(new DrumSound("Drum Acoustic Hat", R.raw.drum_acoustic_hat_1, "Usual hat"));
-        drumSounds.add(new DrumSound("Drum Acoustic Kick 1", R.raw.drum_acoustic_kick_1, "Usual kick"));
-        drumSounds.add(new DrumSound("Drum Acoustic Kick 2", R.raw.drum_acoustic_kick_2, "Usual kick"));
-        drumSounds.add(new DrumSound("Drum Acoustic Kick 3", R.raw.drum_acoustic_kick_3, "Usual kick"));
-        drumSounds.add(new DrumSound("Drum Acoustic Snare", R.raw.drum_acoustic_snare_1, "Usual snare"));
-        drumSounds.add(new DrumSound("Drum Acoustic Sonor Force Snare", R.raw.drum_acoustic_sonor_force_snare, "Usual snare"));
-        drumSounds.add(new DrumSound("Drum Acoustic Zuljin Hat", R.raw.drum_acoustic_zuljin_hat_1, "Usual hat"));
-        drumSounds.add(new DrumSound("Metronome Click", R.raw.drum_click, "Usual click"));
-        drumSounds.add(new DrumSound("Drum Electric Hat", R.raw.drum_electric_hat_1, "Usual hat"));
-        drumSounds.add(new DrumSound("Drum Electric Tom", R.raw.drum_electric_tom, "Electric Tom that sounds like a cheap bass drum"));
-        drumSounds.add(new DrumSound("Drum Pearl Piccolo Side Snare", R.raw.drum_pearl_piccolo_side_snare_1, "wtf is this"));
+
+        drumSounds.add(new DrumSound(0, true, "Drum Acoustic Hat", R.raw.drum_acoustic_hat_1, "Usual hat"));
+        drumSounds.add(new DrumSound(1, false, "Drum Acoustic Kick 1", R.raw.drum_acoustic_kick_1, "Usual kick"));
+        drumSounds.add(new DrumSound(2, false, "Drum Acoustic Kick 2", R.raw.drum_acoustic_kick_2, "Usual kick"));
+        drumSounds.add(new DrumSound(3, false, "Drum Acoustic Kick 3", R.raw.drum_acoustic_kick_3, "Usual kick"));
+        drumSounds.add(new DrumSound(4, false, "Drum Acoustic Snare", R.raw.drum_acoustic_snare_1, "Usual snare"));
+        drumSounds.add(new DrumSound(5, false, "Drum Acoustic Sonor Force Snare", R.raw.drum_acoustic_sonor_force_snare, "Usual snare"));
+        drumSounds.add(new DrumSound(6, false, "Drum Acoustic Zuljin Hat", R.raw.drum_acoustic_zuljin_hat_1, "Usual hat"));
+        drumSounds.add(new DrumSound(7, false, "Metronome Click", R.raw.drum_click, "Usual click"));
+        drumSounds.add(new DrumSound(8, false, "Drum Electric Hat", R.raw.drum_electric_hat_1, "Usual hat"));
+        drumSounds.add(new DrumSound(9, false, "Drum Electric Tom", R.raw.drum_electric_tom, "Electric Tom that sounds like a cheap bass drum"));
+        drumSounds.add(new DrumSound(10, false, "Drum Pearl Piccolo Side Snare", R.raw.drum_pearl_piccolo_side_snare_1, "wtf is this"));
 
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -131,8 +131,14 @@ public class Metronome extends AppCompatActivity {
 
         soundPool = new SoundPool(20, AudioManager.STREAM_MUSIC, 1);
         soundToPlay = soundPool.load(this, R.raw.drum_acoustic_hat_1, 1);
+        setTitle(getResources().getString(R.string.app_name) + ": " + drumSounds.get(0).getName());
 
 //        launchSound();
+    }
+
+    public void resetAdapter(){
+        drumSoundAdapter = new DrumSoundAdapter(drumSounds, this, Metronome.this);
+        recyclerView.setAdapter(drumSoundAdapter);
     }
 
     public void updateSoundResource(int soundResource) {
@@ -204,10 +210,24 @@ public class Metronome extends AppCompatActivity {
             runOnUiThread(punchFabPauseRipple);
             soundPool.play(soundToPlay, 1, 1, 1, 0, 1);
             runOnUiThread(punchFab);
+            if(bpm<60){
+                handlerDrum.postDelayed(stopFab, 1000);
+            }
             handlerDrum.postDelayed(thread, getDelay(bpm));
 
         }
     };
+
+    Runnable stopFab = new Runnable() {
+        @Override
+        public void run() {
+            rippleBackgroundFab.stopRippleAnimation();
+        }
+    };
+
+    void stopRipple(){
+        rippleBackgroundFab.stopRippleAnimation();
+    }
 
     View.OnClickListener ripplePlusListener = new View.OnClickListener() {
         @Override
