@@ -8,5 +8,5 @@
         android:height="40dp"/>
     <stroke
         android:width="1.5dp"
-        android:color="@color/black"/>
+        android:color="@color/divider"/>
 </shape>

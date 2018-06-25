@@ -22,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -29,6 +30,8 @@ import com.skyfishjy.library.RippleBackground;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import su.leff.metronome.Adapter.DrumSoundAdapter;
 import su.leff.metronome.Class.DrumSound;
 import su.leff.metronome.R;
@@ -40,6 +43,7 @@ public class Metronome extends AppCompatActivity {
 
     private SoundPool mSoundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
 
+    @BindView(R.id.RecyclerView)
     RecyclerView recyclerView;
 
     SoundPool soundPool;
@@ -53,15 +57,23 @@ public class Metronome extends AppCompatActivity {
     final Handler handlerFab = new Handler();
     final Handler handlerDrum = new Handler();
 
-    RippleBackground rippleBackgroundMinus;
-    RelativeLayout rippleLayoutMinus;
-    RippleBackground rippleBackgroundPlus;
-    RelativeLayout rippleLayoutPlus;
+    @BindView(R.id.imgbtn_add)
+    ImageButton bpmPlus;
+    @BindView(R.id.imgbtn_remove)
+    ImageButton bpmMinus;
+    //    RippleBackground rippleBackgroundMinus;
+//    RelativeLayout rippleLayoutMinus;
+//    RippleBackground rippleBackgroundPlus;
+//    RelativeLayout rippleLayoutPlus;
+    @BindView(R.id.ripple_fab)
     RippleBackground rippleBackgroundFab;
+    @BindView(R.id.fab_play_pause)
     FloatingActionButton fabPlayPause;
     ArrayList<DrumSound> drumSounds = new ArrayList<>();
+    @BindView(R.id.controls)
     RelativeLayout controls;
 
+    @BindView(R.id.edt_bpm)
     MaterialEditText bpm_edt;
 
     int bpm = 140;
@@ -73,9 +85,9 @@ public class Metronome extends AppCompatActivity {
 
         setTitle(getResources().getString(R.string.metronome));
 
-        recyclerView = findViewById(R.id.RecyclerView);
+//        recyclerView = findViewById(R.id.RecyclerView);
 
-
+        ButterKnife.bind(this);
 
         drumSounds.add(new DrumSound(0, true, "Drum Acoustic Hat", R.raw.drum_acoustic_hat_1, "Usual hat"));
         drumSounds.add(new DrumSound(1, false, "Drum Acoustic Kick 1", R.raw.drum_acoustic_kick_1, "Usual kick"));
@@ -109,23 +121,7 @@ public class Metronome extends AppCompatActivity {
                 this, OrientationHelper.VERTICAL, false));
 
         recyclerView.setAdapter(drumSoundAdapter);
-
-        controls = findViewById(R.id.controls);
-
-        rippleBackgroundMinus = findViewById(R.id.ripple_minus);
-        rippleLayoutMinus = findViewById(R.id.minus_bpm);
-
-        rippleBackgroundPlus = findViewById(R.id.ripple_plus);
-        rippleLayoutPlus = findViewById(R.id.plus_bpm);
-
-        rippleLayoutMinus.setOnClickListener(rippleMinusListener);
-        rippleLayoutPlus.setOnClickListener(ripplePlusListener);
-
-        bpm_edt = findViewById(R.id.edt_bpm);
         bpm_edt.addTextChangedListener(textWatcher);
-
-        rippleBackgroundFab = findViewById(R.id.ripple_fab);
-        fabPlayPause = findViewById(R.id.fab_play_pause);
 
         fabPlayPause.setOnClickListener(fabButtonListener);
 
@@ -133,10 +129,14 @@ public class Metronome extends AppCompatActivity {
         soundToPlay = soundPool.load(this, R.raw.drum_acoustic_hat_1, 1);
         setTitle(getResources().getString(R.string.app_name) + ": " + drumSounds.get(0).getName());
 
+        bpmPlus.setOnClickListener(ripplePlusListener);
+        bpmMinus.setOnClickListener(rippleMinusListener);
+
+
 //        launchSound();
     }
 
-    public void resetAdapter(){
+    public void resetAdapter() {
         drumSoundAdapter = new DrumSoundAdapter(drumSounds, this, Metronome.this);
         recyclerView.setAdapter(drumSoundAdapter);
     }
@@ -190,6 +190,25 @@ public class Metronome extends AppCompatActivity {
         }
     };
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(status) {
+            stopSound();
+            stopRipple();
+            thread.interrupt();
+            thread.start();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        status = false;
+        stopSound();
+        stopRipple();
+        super.onPause();
+    }
+
     Runnable punchFab = new Runnable() {
         @Override
         public void run() {
@@ -207,13 +226,15 @@ public class Metronome extends AppCompatActivity {
     Thread thread = new Thread() {
         @Override
         public void run() {
-            runOnUiThread(punchFabPauseRipple);
-            soundPool.play(soundToPlay, 1, 1, 1, 0, 1);
-            runOnUiThread(punchFab);
-            if(bpm<60){
-                handlerDrum.postDelayed(stopFab, 1000);
+            if(!interrupted()) {
+                runOnUiThread(punchFabPauseRipple);
+                soundPool.play(soundToPlay, 1, 1, 1, 0, 1);
+                runOnUiThread(punchFab);
+                if (bpm < 60) {
+                    handlerDrum.postDelayed(stopFab, 1000);
+                }
+                handlerDrum.postDelayed(thread, getDelay(bpm));
             }
-            handlerDrum.postDelayed(thread, getDelay(bpm));
 
         }
     };
@@ -225,7 +246,7 @@ public class Metronome extends AppCompatActivity {
         }
     };
 
-    void stopRipple(){
+    void stopRipple() {
         rippleBackgroundFab.stopRippleAnimation();
     }
 
@@ -237,14 +258,14 @@ public class Metronome extends AppCompatActivity {
             imm.hideSoftInputFromWindow(bpm_edt.getWindowToken(), 0);
             bpm += 5;
             updateBpmEditText();
-            rippleBackgroundPlus.startRippleAnimation();
-            handler.postDelayed(runnablePlus, 200);
+//            rippleBackgroundPlus.startRippleAnimation();
+//            handler.postDelayed(runnablePlus, 200);
         }
     };
 
     final Runnable runnablePlus = new Runnable() {
         public void run() {
-            rippleBackgroundPlus.stopRippleAnimation();
+//            rippleBackgroundPlus.stopRippleAnimation();
         }
     };
 
@@ -257,15 +278,15 @@ public class Metronome extends AppCompatActivity {
             if (bpm > 5) {
                 bpm -= 5;
                 updateBpmEditText();
-                rippleBackgroundMinus.startRippleAnimation();
-                handler.postDelayed(runnableMinus, 200);
+//                rippleBackgroundMinus.startRippleAnimation();
+//                handler.postDelayed(runnableMinus, 200);
             }
         }
     };
 
     final Runnable runnableMinus = new Runnable() {
         public void run() {
-            rippleBackgroundMinus.stopRippleAnimation();
+//            rippleBackgroundMinus.stopRippleAnimation();
         }
     };
 
@@ -293,6 +314,10 @@ public class Metronome extends AppCompatActivity {
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             getBpmFromEditText();
+            if (status) {
+                stopSound();
+                handlerDrum.post(thread);
+            }
         }
 
         @Override

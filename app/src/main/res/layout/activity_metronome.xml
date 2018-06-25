@@ -37,35 +37,54 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <com.skyfishjy.library.RippleBackground xmlns:android="http://schemas.android.com/apk/res/android"
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/ripple_minus"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_gravity="center_vertical"
-                    app:rb_color="#3F51B5"
-                    app:rb_duration="200"
-                    app:rb_radius="12dp"
-                    app:rb_rippleAmount="1"
-                    app:rb_scale="2">
+                <!--<com.skyfishjy.library.RippleBackground xmlns:android="http://schemas.android.com/apk/res/android"-->
+                    <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+                    <!--android:id="@+id/ripple_minus"-->
+                    <!--android:layout_width="60dp"-->
+                    <!--android:layout_height="60dp"-->
+                    <!--android:layout_gravity="center_vertical"-->
+                    <!--app:rb_color="#3F51B5"-->
+                    <!--app:rb_duration="200"-->
+                    <!--app:rb_radius="12dp"-->
+                    <!--app:rb_rippleAmount="1"-->
+                    <!--app:rb_scale="2">-->
 
-                    <RelativeLayout
-                        android:id="@+id/minus_bpm"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                    <!--<RelativeLayout-->
+                        <!--android:foreground="?android:attr/selectableItemBackground"-->
+                        <!--android:background="@drawable/circle_shape"-->
+                        <!--android:id="@+id/minus_bpm"-->
+                        <!--android:layout_width="48dp"-->
+                        <!--android:layout_height="48dp">-->
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="center"
-                            android:text="-"
-                            android:textSize="40dp" />
+                        <!--<TextView-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="match_parent"-->
+                            <!--android:gravity="center"-->
+                            <!--android:text="-"-->
+                            <!--android:textSize="40dp" />-->
 
-                    </RelativeLayout>
+                    <!--</RelativeLayout>-->
 
-                </com.skyfishjy.library.RippleBackground>
+                <!--</com.skyfishjy.library.RippleBackground>-->
+
+                <FrameLayout
+                    android:background="@drawable/circle_shape"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <ImageButton
+                        android:id="@+id/imgbtn_remove"
+                        android:background="?selectableItemBackgroundBorderless"
+                        android:padding="8dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_remove"/>
+                </FrameLayout>
+
+
 
                 <com.rengwuxian.materialedittext.MaterialEditText
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
                     android:id="@+id/edt_bpm"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -74,39 +93,57 @@
                     android:gravity="center_horizontal"
                     android:hint="Beats Per Minute"
                     android:inputType="number"
+                    android:textColor="@color/primaryText"
+                    ads:met_primaryColor="@color/divider"
+                    ads:met_underlineColor="@color/divider"
                     android:text="140"
-                    android:textSize="30dp"
+                    android:textSize="30sp"
                     app:met_floatingLabel="highlight" />
 
+                <FrameLayout
+                    android:background="@drawable/circle_shape"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                <ImageButton
+                    android:id="@+id/imgbtn_add"
+                    android:padding="8dp"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_add" />
+                </FrameLayout>
 
-                <com.skyfishjy.library.RippleBackground xmlns:android="http://schemas.android.com/apk/res/android"
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/ripple_plus"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_gravity="center_vertical"
-                    app:rb_color="#3F51B5"
-                    app:rb_duration="200"
-                    app:rb_radius="12dp"
-                    app:rb_rippleAmount="1"
-                    app:rb_scale="2">
+
+                <!--<com.skyfishjy.library.RippleBackground xmlns:android="http://schemas.android.com/apk/res/android"-->
+                    <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+                    <!--android:id="@+id/ripple_plus"-->
+                    <!--android:layout_width="60dp"-->
+                    <!--android:layout_height="60dp"-->
+                    <!--android:layout_gravity="center_vertical"-->
+                    <!--app:rb_color="#3F51B5"-->
+                    <!--app:rb_duration="200"-->
+                    <!--app:rb_radius="12dp"-->
+                    <!--app:rb_rippleAmount="1"-->
+                    <!--app:rb_scale="2">-->
 
 
-                    <RelativeLayout
-                        android:id="@+id/plus_bpm"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                    <!--<RelativeLayout-->
+                        <!--android:foreground="?android:attr/selectableItemBackground"-->
+                        <!--android:background="@drawable/circle_shape"-->
+                        <!--android:id="@+id/plus_bpm"-->
+                        <!--android:layout_width="48dp"-->
+                        <!--android:layout_height="48dp">-->
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="center"
-                            android:text="+"
-                            android:textSize="40dp" />
+                        <!--<TextView-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="match_parent"-->
+                            <!--android:gravity="center"-->
+                            <!--android:text="+"-->
+                            <!--android:textSize="40dp" />-->
 
-                    </RelativeLayout>
+                    <!--</RelativeLayout>-->
 
-                </com.skyfishjy.library.RippleBackground>
+                <!--</com.skyfishjy.library.RippleBackground>-->
 
 
             </LinearLayout>
@@ -133,7 +170,7 @@
         android:layout_height="100dp"
         app:layout_anchor="@id/controls"
         app:layout_anchorGravity="end"
-        app:rb_color="#FF4081"
+        app:rb_color="@color/colorAccent"
         app:rb_duration="1000"
         app:rb_radius="45dp"
         app:rb_rippleAmount="1"
@@ -153,6 +190,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:src="@drawable/ic_play"
+                android:theme="@style/AppThemeFab"
                 android:elevation="6dp"/>
         </RelativeLayout>
     </com.skyfishjy.library.RippleBackground>
